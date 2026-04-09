@@ -22,6 +22,13 @@ eventRoute.post("/create-user", async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ error: "Username already exists" });
         }
+
+        // Check if email already exists
+        const existingEmail = await userSchema.findOne({ email: req.body.email });
+        if (existingEmail) {
+            return res.status(400).json({ error: "Email already registered" });
+        }
+
         const newUser = await userSchema.create(req.body);
 
         // Trigger Registration Email
@@ -319,27 +326,46 @@ eventRoute.post("/book-event/:eventId", authMiddleware.verifyToken, async (req, 
         const event = await eventSchema.findById(eventId);
         const user = await userSchema.findById(userId);
 
-        if (!event) {
-            return res.status(404).json({ error: "Event not found" });
-        }
-        if (event.slots <= 0) {
-            return res.status(400).json({ error: "Event is full" });
-        }
-        if (user.bookedEvents.includes(eventId)) {
-            return res.status(400).json({ error: "Event already booked" });
+        // Use transactions for atomicity if your MongoDB version/setup supports it.
+        // Otherwise, use a sequence with manual cleanup on failure.
+        
+        // 1. Update User first (checks if already booked)
+        const updatedUser = await userSchema.findOneAndUpdate(
+            { _id: userId, bookedEvents: { $ne: eventId } },
+            { $push: { bookedEvents: eventId } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(400).json({ error: "Event already booked or user not found" });
         }
 
-        // Atomic update
-        event.slots -= 1;
-        event.registeredUsers.push(userId);
-        await event.save();
+        try {
+            // 2. Update Event slots and registeredUsers
+            const updatedEvent = await eventSchema.findOneAndUpdate(
+                { _id: eventId, slots: { $gt: 0 } },
+                { 
+                    $inc: { slots: -1 },
+                    $push: { registeredUsers: userId } 
+                },
+                { new: true }
+            );
 
-        user.bookedEvents.push(eventId);
-        await user.save();
+            if (!updatedEvent) {
+                // Rollback user update if event update fails (e.g., no slots left)
+                await userSchema.findByIdAndUpdate(userId, { $pull: { bookedEvents: eventId } });
+                return res.status(400).json({ error: "Event is full or no longer exists" });
+            }
 
-        res.status(200).json({ message: "Event booked successfully" });
+            res.status(200).json({ message: "Event booked successfully" });
+        } catch (eventErr) {
+            // Manual Rollback for User
+            await userSchema.findByIdAndUpdate(userId, { $pull: { bookedEvents: eventId } });
+            throw eventErr;
+        }
 
     } catch (err) {
+        console.error("Booking Error:", err);
         res.status(500).json({ error: "Server error during booking process." });
     }
 });
@@ -355,47 +381,56 @@ eventRoute.post("/cancel-booking/:eventId", authMiddleware.verifyToken, async (r
         const event = await eventSchema.findById(eventId);
         const user = await userSchema.findById(userId);
 
-        if (!event) {
-            console.log("[CANCEL] Event not found"); // DEBUG
-            return res.status(404).json({ error: "Event not found" });
-        }
-        if (!user) {
-            console.log("[CANCEL] User not found"); // DEBUG
-            return res.status(404).json({ error: "User not found" });
-        }
+        // Use a sequence with manual cleanup on failure.
 
-        console.log("[CANCEL] Current booked events:", user.bookedEvents); // DEBUG
+        // 1. Update User first (remove event)
+        const updatedUser = await userSchema.findOneAndUpdate(
+            { _id: userId, bookedEvents: eventId },
+            { $pull: { bookedEvents: eventId } },
+            { new: true }
+        );
 
-        // Check if booked - Ensure type matching (string vs ObjectId)
-        const isBooked = user.bookedEvents.some(id => id.toString() === eventId);
-        if (!isBooked) {
-            console.log("[CANCEL] User has not booked this event"); // DEBUG
-            return res.status(400).json({ error: "You have not booked this event" });
+        if (!updatedUser) {
+            return res.status(400).json({ error: "Booking not found or already cancelled" });
         }
 
-        // Remove from event
-        event.slots += 1;
-        event.registeredUsers = event.registeredUsers.filter(id => id.toString() !== userId);
-        await event.save();
+        try {
+            // 2. Update Event (restore slot, remove user)
+            const updatedEvent = await eventSchema.findOneAndUpdate(
+                { _id: eventId, registeredUsers: userId },
+                { 
+                    $inc: { slots: 1 },
+                    $pull: { registeredUsers: userId } 
+                },
+                { new: true }
+            );
 
-        // Remove from user
-        user.bookedEvents = user.bookedEvents.filter(id => id.toString() !== eventId);
-        await user.save();
+            if (!updatedEvent) {
+                // Should technically not happen if user had it booked, but handle just in case
+                // Rollback user pull if event update fails
+                await userSchema.findByIdAndUpdate(userId, { $push: { bookedEvents: eventId } });
+                return res.status(404).json({ error: "Event not found or inconsistency detected" });
+            }
 
-        console.log("[CANCEL] Cancellation successful"); // DEBUG
+            console.log("[CANCEL] Cancellation successful");
 
-        // Trigger Booking Cancellation Email
-        if (user.email) {
-            sendEmail(
-                user.email,
-                "⚠️ Booking Cancelled",
-                `Hello ${user.fullName || user.username},\n\nYour booking for the event "${event.name}" has been cancelled successfully.`
-            ).catch(err => console.error("Email queue error:", err));
+            // Trigger Booking Cancellation Email
+            if (updatedUser.email) {
+                sendEmail(
+                    updatedUser.email,
+                    "⚠️ Booking Cancelled",
+                    `Hello ${updatedUser.fullName || updatedUser.username},\n\nYour booking for the event "${updatedEvent.name}" has been cancelled successfully.`
+                ).catch(err => console.error("Email queue error:", err));
+            }
+
+            res.status(200).json({ message: "Booking cancelled successfully" });
+        } catch (eventErr) {
+            // Manual Rollback for User
+            await userSchema.findByIdAndUpdate(userId, { $push: { bookedEvents: eventId } });
+            throw eventErr;
         }
-
-        res.status(200).json({ message: "Booking cancelled successfully" });
     } catch (err) {
-        console.error("[CANCEL] Error cancelling booking:", err); // DEBUG
+        console.error("[CANCEL] Error cancelling booking:", err);
         res.status(500).json({ error: "Server error during cancellation." });
     }
 });

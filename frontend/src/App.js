@@ -27,7 +27,6 @@ import './App.css';
 setupAxiosInterceptors();
 
 function AppRoutes() {
-  const { isLoggedIn, user } = useAuth();
 
   return (
     <Routes>
@@ -41,7 +40,7 @@ function AppRoutes() {
       <Route
         path="/edit-profile"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <UserUpdateForm />
           </ProtectedRoute>
         }
@@ -49,7 +48,7 @@ function AppRoutes() {
       <Route
         path="/view-user"
         element={
-          <ProtectedRouteAdmin userRole={user?.role}>
+          <ProtectedRouteAdmin>
             <UserList />
           </ProtectedRouteAdmin>
         }
@@ -59,7 +58,7 @@ function AppRoutes() {
       <Route
         path="/create-event"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <CreateEvent />
           </ProtectedRoute>
         }
@@ -67,7 +66,7 @@ function AppRoutes() {
       <Route
         path="/event-list"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <EventList />
           </ProtectedRoute>
         }
@@ -75,7 +74,7 @@ function AppRoutes() {
       <Route
         path="/view-event/:id"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <ViewEvent />
           </ProtectedRoute>
         }
@@ -83,7 +82,7 @@ function AppRoutes() {
       <Route
         path="/update-event"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <UpdateEvent />
           </ProtectedRoute>
         }
@@ -91,7 +90,7 @@ function AppRoutes() {
       <Route
         path="/booked-events"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+          <ProtectedRoute>
             <BookedEventsList />
           </ProtectedRoute>
         }

@@ -1,39 +1,22 @@
 import React from "react";
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import { BiSolidUserCircle } from "react-icons/bi";
 import Logo from "../../assets/logo_circle.jpg";
-
+import { useAuth } from "../../context/AuthContext";
 import "./Navbar.css";
 
-export default function Navbar() { // Removed the unused `props` parameter
-  const [user, setUser] = useState();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      setUser(user);
-    }, 5000);
-
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, []);
-
-  const logout = () => {
-    localStorage.setItem("loginStatus", false);
-    localStorage.removeItem("user");
-    setUser(null); // Clear state immediately
-  };
+export default function Navbar() {
+  const { user, logout } = useAuth();
 
   if (user && user.role === "admin") {
     return (
       <nav className="navbar navbar-expand-lg">
         <div className="container-fluid box">
-          <img className="logo" src={Logo} alt="" />
+          <img className="logo" src={Logo} alt="Eventify Logo" />
           <div className="menu">
             <ul>
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/view-event">View Events</Link></li>
+              <li><Link to="/event-list">View Events</Link></li>
               <li><Link to="/create-event">Create Event</Link></li>
               <li><Link to="/view-user">View Users</Link></li>
               <li><Link to="/weather-report">Weather Report</Link></li>
@@ -55,12 +38,12 @@ export default function Navbar() { // Removed the unused `props` parameter
     return (
       <nav className="navbar navbar-expand-lg">
         <div className="container-fluid box">
-          <img className="logo" src={Logo} alt="" />
+          <img className="logo" src={Logo} alt="Eventify Logo" />
           <div className="menu">
             <ul>
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/view-event">Events</Link></li>
-              <li><Link to="/create-event">Create Event</Link></li> {/* <-- Added for users */}
+              <li><Link to="/event-list">Events</Link></li>
+              <li><Link to="/create-event">Create Event</Link></li>
               <li><Link to="/contact">CONTACT US</Link></li>
               <li><Link to="/weather-report">Weather Report</Link></li>
             </ul>
@@ -83,12 +66,12 @@ export default function Navbar() { // Removed the unused `props` parameter
     return (
       <nav className="navbar navbar-expand-lg">
         <div className="container-fluid box">
-          <img className="logo" src={Logo} alt="" />
+          <img className="logo" src={Logo} alt="Eventify Logo" />
           <div className="menu">
             <ul>
               <li><Link to="/">Home</Link></li>
               <li><Link to="/contact">CONTACT US</Link></li>
-              <li><Link to="/weather-report">Weather Report</Link></li> {/* <-- Added */}
+              <li><Link to="/weather-report">Weather Report</Link></li>
             </ul>
           </div>
         </div>

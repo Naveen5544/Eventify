@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getEventById, updateEvent } from "../../api";
 import EventRegistrationForm from "./eventform";
 
 function UpdateEvent() {
     const [initialData, setInitialData] = useState(null);
     const navigate = useNavigate();
-    const eventID = localStorage.getItem("eventID");
+    const location = useLocation();
+
+    // Prefer router state; fall back to localStorage for backward compatibility
+    const eventID = location.state?.eventId || localStorage.getItem("eventID");
 
     useEffect(() => {
         if (!eventID) {
@@ -20,8 +23,8 @@ function UpdateEvent() {
                 setInitialData(response.data);
             })
             .catch(error => {
-                console.error('Error fetching event details:', error);
-                alert('Could not load event data.');
+                console.error("Error fetching event details:", error);
+                alert("Could not load event data.");
             });
     }, [eventID, navigate]);
 
@@ -29,17 +32,19 @@ function UpdateEvent() {
         updateEvent(eventID, formData)
             .then(() => {
                 alert("Event updated successfully!");
+                // Clean up legacy localStorage entry if it was used
                 localStorage.removeItem("eventID");
                 navigate("/event-list");
             })
             .catch((error) => {
                 console.error("Error updating event:", error);
-                alert("Failed to update event. Please try again.");
+                const errorMessage = error.response?.data?.error || "Failed to update event. Please try again.";
+                alert(errorMessage);
             });
     };
 
     if (!initialData) {
-        return <p style={{ color: 'white', textAlign: 'center' }}>Loading event data...</p>;
+        return <p style={{ color: "white", textAlign: "center" }}>Loading event data...</p>;
     }
 
     return (
@@ -56,6 +61,6 @@ function UpdateEvent() {
             onSubmit={handleSubmit}
         />
     );
-};
+}
 
 export default UpdateEvent;

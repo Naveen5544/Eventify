@@ -6,9 +6,18 @@ import { getEventById } from "../../api";
 import "./Events.css";
 
 const ViewEvent = () => {
-  const { id } = useParams(); // Get event ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const dateObj = new Date(dateString);
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const year = dateObj.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
 
   useEffect(() => {
     getEventById(id)
@@ -43,7 +52,7 @@ const ViewEvent = () => {
           <Card.Subtitle style={{ fontSize: "1.3vw", fontStyle: "italic" }}>{club}</Card.Subtitle>
           <Card.Text style={{ fontSize: "1.1vw", marginTop: "1rem" }}>
             <strong>Description:</strong> {description}<br />
-            <strong>Date:</strong> {date}<br />
+            <strong>Date:</strong> {formatDate(date)}<br />
             <strong>Time:</strong> {startTime} - {endTime}<br />
             <strong>Place:</strong> {place}<br />
             <strong>Slots Left:</strong> {slots}

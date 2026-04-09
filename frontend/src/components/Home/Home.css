@@ -6,13 +6,13 @@
 
 
 
-.search{
+.search {
     width: 330px;
     float: left;
     margin-left: 270px;
 }
 
-.srch{
+.srch {
     font-family: 'Times New Roman';
     width: 200px;
     height: 40px;
@@ -28,7 +28,7 @@
     border-top-left-radius: 5px;
 }
 
-.btn{
+.btn {
     width: 100px;
     height: 40px;
     background: #ff7200;
@@ -41,160 +41,208 @@
     transition: 0.2s ease;
     cursor: pointer;
 }
-.btn:hover{
+
+.btn:hover {
     color: #000;
 }
 
-.btn:focus{
+.btn:focus {
     outline: none;
 }
 
-.srch:focus{
+.srch:focus {
     outline: none;
 }
 
-.content{
-    width: 1200px;
-    height: auto;
-    margin: auto;
+.content {
+    width: 100%;
+    min-height: calc(100vh - 150px);
+    margin: 0 auto;
     color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertical Center */
+    align-items: center;    /* Horizontal Center */
     position: relative;
+    padding: 0 20px;
 }
 
-.content .par{
-    padding-left: 20px;
-    padding-bottom: 25px;
-    font-family: Arial;
-    letter-spacing: 1.2px;
-    line-height: 30px;
+.branding-header {
+    width: 100%;
+    max-width: 900px;
+    /* Aligns with the 'about' paragraph */
+    margin: 0 auto;
+    /* Center the block while keeping text left */
+    text-align: left;
 }
 
-.content h1{
-    font-family: 'Roboto Slab';
-    font-size: 50px;
-    padding-left: 20px;
-    margin-top: 8%;
-    letter-spacing: 2px;
+.content h1 {
+    font-family: 'Roboto Slab', serif;
+    font-size: 60px;
+    margin-top: 2%;
+    letter-spacing: 3px;
     color: #ff7200;
 }
 
-.tagline{
-    font-size: 22px;
-    padding-left: 20px;
+.tagline {
+    font-size: 24px;
     color: rgb(243, 243, 114);
+    margin-bottom: 20px;
+    font-family: 'Nunito', sans-serif;
 }
 
-.about{
-    font-family: 'Nunito';
-    font-size: 20px;
-    padding-left: 20px;
-    letter-spacing: 2px;
-    padding-bottom: 25px;
-    margin-right: 35%;
-    line-height: 30px;
+.about {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    line-height: 1.6;
     color: #fff;
+    max-width: 900px;
+    margin: 40px auto;
+    /* Centered block */
+    text-align: center;
+    /* Centered text */
 }
 
-.content span{
+.content span {
     color: #ff7200;
     font-size: 65px
 }
 
-.form{
-    width: 250px;
-    height: 380px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8)50%,rgba(0,0,0,0.8)50%);
-    position: absolute;
-    top: -20px;
-    left: 870px;
-    transform: translate(0%,-5%);
-    border-radius: 10px;
-    padding: 25px;
+.form {
+    width: 380px;
+    height: auto;
+    background: rgba(10, 4, 22, 0.9);
+    /* Deep dark background */
+    backdrop-filter: blur(15px);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 114, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
 }
 
-.form h2{
-    width: 220px;
-    font-family: sans-serif;
+.form:hover {
+    box-shadow: 0 25px 60px rgba(255, 114, 0, 0.15);
+}
+
+.form h2 {
+    width: auto;
+    font-family: 'Roboto Slab', serif;
     text-align: center;
-    color: #ff7200;
-    font-size: 22px;
-    background-color: #fff;
-    border-radius: 10px;
-    margin: 2px;
-    padding: 8px;
-}
-
-.form input{
-    width: 240px;
-    height: 35px;
+    color: #ffffff;
+    font-size: 2.2rem;
     background: transparent;
-    border-bottom: 1px solid #ff7200;
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    color: #fff;
-    font-size: 15px;
+    /* Removed white box */
+    border-bottom: 3px solid #ff7200;
+    margin-bottom: 40px;
+    padding: 0 10px 10px 10px;
     letter-spacing: 1px;
-    margin-top: 30px;
-    font-family: sans-serif;
 }
 
-.form input:focus{
-    outline: none;
+.form form {
+    width: 100%;
 }
 
-::placeholder{
+.form input {
+    width: 100% !important;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Modern translucent input */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     color: #fff;
-    font-family: Arial;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+    padding: 0 15px;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s ease;
 }
 
-.btnn{
-    width: 240px;
-    height: 40px;
-    background: #ff7200;
+.form input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ff7200;
+    box-shadow: 0 0 15px rgba(255, 114, 0, 0.3);
+}
+
+::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Nunito', sans-serif;
+}
+
+.btnn {
+    width: 100% !important;
+    height: 50px;
+    background: linear-gradient(135deg, #ff7200 0%, #ff4500 100%);
     border: none;
-    margin-top: 30px;
-    font-size: 18px;
-    border-radius: 10px;
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 12px;
     cursor: pointer;
     color: #fff;
-    transition: 0.4s ease;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 20px rgba(255, 114, 0, 0.3);
 }
-.btnn:hover{
-    background: #fff;
-    color: #ff7200;
+
+.btnn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(255, 114, 0, 0.4);
+    background: linear-gradient(135deg, #ff8c00 0%, #ff5e00 100%);
 }
-.btnn a{
-    text-decoration: none;
-    color: #000;
-    font-weight: bold;
+
+.btnn:active {
+    transform: translateY(-1px);
 }
-.form .link{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 17px;
-    padding-top: 20px;
+
+.form .link {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    padding-top: 30px;
     text-align: center;
+    color: rgba(255, 255, 255, 0.7);
 }
-.form .link a{
+
+.form .link a {
     text-decoration: none;
     color: #ff7200;
+    font-weight: 700;
+    transition: color 0.3s ease;
 }
-.liw{
+
+.form .link a:hover {
+    color: #ff8c00;
+    text-decoration: underline;
+}
+
+/* Removed old icons/liw styles as form is cleaner now */
+
+.liw {
     padding-top: 15px;
     padding-bottom: 10px;
     text-align: center;
 }
-.icons a{
+
+.icons a {
     text-decoration: none;
     color: #fff;
 }
-.icons ion-icon{
+
+.icons ion-icon {
     color: #fff;
     font-size: 30px;
     padding-left: 14px;
     padding-top: 5px;
     transition: 0.3s ease;
 }
-.icons ion-icon:hover{
+
+.icons ion-icon:hover {
     color: #ff7200;
 }

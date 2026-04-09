@@ -20,7 +20,7 @@ export default function Login() {
       login(user, token);
       localStorage.setItem("loginStatus", "true"); // Add this line
       alert(`Welcome ${user.username}`);
-      navigate("/event-list");
+      navigate("/");
     } catch (error) {
       alert("Invalid credentials. Please try again.");
       console.error("Login failed:", error);

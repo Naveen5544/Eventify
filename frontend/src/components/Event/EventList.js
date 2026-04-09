@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import EventCard from "./EventCard";
 import { getEvents } from "../../api";
 
@@ -8,8 +8,10 @@ const EventList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    getEvents(token)
+  const fetchEvents = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    getEvents()
       .then((res) => {
         if (res.status === 200 && Array.isArray(res.data)) {
           setEvents(res.data);
@@ -22,7 +24,11 @@ const EventList = () => {
         setError("Error fetching events");
       })
       .finally(() => setLoading(false));
-  }, [token]);
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   if (loading) return <p style={{ textAlign: "center" }}>Loading events...</p>;
   if (error) return <p style={{ textAlign: "center", color: "red" }}>{error}</p>;
@@ -30,17 +36,14 @@ const EventList = () => {
 
   return (
     <div className="cardContainer">
-      {events.map((event) => {
-        const slotsLeft = `Slots Left: ${event.slots}`;
-        return (
-          <EventCard
-            key={event._id}
-            obj={event}
-            action="book"
-            slotsLeft={slotsLeft}
-          />
-        );
-      })}
+      {events.map((event) => (
+        <EventCard
+          key={event._id}
+          obj={event}
+          action="book"
+          onRefresh={fetchEvents}
+        />
+      ))}
     </div>
   );
 };

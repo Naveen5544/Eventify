@@ -9,13 +9,15 @@ const initReminderTask = require("./utils/reminderTask");
 
 const app = express();
 
-// Initialize scheduled reminders
-initReminderTask();
-
 // Database Connection with Improved Error Handling
 mongoose.set("strictQuery", true);
 const mongoURI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/Management";
-mongoose.connect(mongoURI).then(() => console.log("✅ Connected to DB"))
+mongoose.connect(mongoURI)
+    .then(() => {
+        console.log("✅ Connected to DB");
+        // Initialize scheduled reminders only after DB is ready
+        initReminderTask();
+    })
     .catch((err) => console.error("❌ Database connection error:", err));
 
 app.use(bodyParser.json());

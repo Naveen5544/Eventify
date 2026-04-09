@@ -48,6 +48,14 @@ const EventRegistrationForm = (props) => {
 
   const todayStr = new Date().toISOString().split('T')[0];
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
