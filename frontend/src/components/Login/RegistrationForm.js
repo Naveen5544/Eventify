@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../api';
+
 import './register.css';
 
 const RegistrationForm = (props) => {
@@ -18,7 +17,7 @@ const RegistrationForm = (props) => {
   const [title, setTitle] = useState("User Registration");
   const [buttonTitle, setButtonTitle] = useState("Register");
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
+
 
   useEffect(() => {
     setFormData(prev => ({

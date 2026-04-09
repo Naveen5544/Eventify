@@ -1,7 +1,7 @@
 import React from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/Protected/ProtectedRoute';
 import ProtectedRouteAdmin from './components/Protected/ProtectedRoutedAdmin';
 import setupAxiosInterceptors from "./api/axiosInterceptor";

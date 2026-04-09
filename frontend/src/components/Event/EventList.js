@@ -3,7 +3,7 @@ import EventCard from "./EventCard";
 import { getEvents } from "../../api";
 
 const EventList = () => {
-  const token = localStorage.getItem("token");
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
