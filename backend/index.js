@@ -34,8 +34,9 @@ app.use(cors({
 app.use('/eventRoute', eventRoute);
 app.use('/weatherRoute', weatherRoute); // <-- Add this line
 
-app.listen(5000, '0.0.0.0', () => {
-    console.log("🚀 Server started at http://localhost:5000");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server started on port ${PORT}`);
 });
 
 app.get("/", (req, res) => {

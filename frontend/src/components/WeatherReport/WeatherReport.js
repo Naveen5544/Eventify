@@ -56,7 +56,8 @@ export default function WeatherReport() {
   const fetchWeather = async (laititude, longitude, customName = null) => {
     setLoading(true);
     try {
-      const res = await Axios.get("http://127.0.0.1:5000/weatherRoute/get-weather", {
+      const baseUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:5000";
+      const res = await Axios.get(`${baseUrl}/weatherRoute/get-weather`, {
         params: { lat: laititude, lon: longitude },
       });
       setWeather(res.data);

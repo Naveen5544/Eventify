@@ -1,7 +1,9 @@
 import axios from "axios";
 
 // Standardize API URL
-const API_URL = "http://127.0.0.1:5000/eventRoute";
+const API_URL = process.env.REACT_APP_API_URL 
+  ? `${process.env.REACT_APP_API_URL}/eventRoute` 
+  : "http://127.0.0.1:5000/eventRoute";
 
 // Create a centralized Axios instance
 const apiClient = axios.create({
